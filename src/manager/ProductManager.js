@@ -1,5 +1,5 @@
 import fs from "fs";
-import { idManager } from "./validations/IdManager.js";
+import { validator } from "./validations/Validator.js"
 
 class ProductManager {
     constructor(path) {
@@ -29,20 +29,23 @@ class ProductManager {
         }
     }
 
-    addProduct = async (obj) => {
+    addProduct = async (object) => {
         try {
-             if (!obj) throw new Error("Debes enviar por lo menos un valor")
-            const { title, description, code, price, stock, category, thumbnails } = obj;
+            validator.isEmpty(object)
+            const { title, description, code, price, stock, category, thumbnails } = object;
             const product_values = { title, description, code, price, stock, category, thumbnails };
+            validator.validateMissingFields(product_values)
+            validator.validateString("title", product_values.title);
+            validator.validateString("description", product_values.description);
+            validator.validateString("code", product_values.code);
+            validator.validateNumber("price", product_values.price);
+            validator.validateNumber("stock", product_values.stock);
+            validator.validateString("category", product_values.category);
+            validator.validateArray("thumbnails", product_values.thumbnails)
+
 
             const products = await this.getProducts();
-            const id = idManager.generate(products);
-
-            for (const [key, value] of Object.entries(product_values)) {
-                if (!value) {
-                    return `Falta el campo ${key}`
-                }
-            }
+            const id = validator.generateId(products);
 
             const product = {
                 id: id,
