@@ -20,6 +20,7 @@ class ProductManager {
 
     getProductById = async (id) => {
         try {
+            console.log(id)
             const products = await this.getProducts();
             const product = products.find((p) => p.id === Number(id));
             if (!product) throw new Error("Producto no encontrado");
@@ -35,14 +36,18 @@ class ProductManager {
             const { title, description, code, price, stock, category, thumbnails } = object;
             const product_values = { title, description, code, price, stock, category, thumbnails };
             validator.validateMissingFields(product_values)
-            validator.validateString("title", product_values.title);
-            validator.validateString("description", product_values.description);
-            validator.validateString("code", product_values.code);
-            validator.validateNumber("price", product_values.price);
-            validator.validateNumber("stock", product_values.stock);
-            validator.validateString("category", product_values.category);
-            validator.validateArray("thumbnails", product_values.thumbnails)
 
+            for (const [key, value] of Object.entries(object)) {
+                if (["title", "description", "code", "category"].includes(key)) {
+                    validator.validateString(key, value);
+                }
+                if (["price", "stock"].includes(key)) {
+                    validator.validateNumber(key, value);
+                }
+                if (key === "thumbnails") {
+                    validator.validateArray(key, value);
+                }
+            }
 
             const products = await this.getProducts();
             const id = validator.generateId(products);
@@ -70,16 +75,29 @@ class ProductManager {
 
     }
 
-    updateProduct = async (id, updatedProduct) => {
+    updateProduct = async (id, object) => {
         try {
-            if (updatedProduct === null) throw new Error("Debe ingresar al menos un campo para modificar")
-            if ('id' in updatedProduct) throw new Error("No se puede modificar el campo 'id'");
+
+            validator.isEmpty(object)
+            if ('id' in object) throw new Error("No se puede modificar el campo 'id'");
+
+            for (const [key, value] of Object.entries(object)) {
+                if (["title", "description", "code", "category"].includes(key)) {
+                    validator.validateString(key, value);
+                }
+                if (["price", "stock"].includes(key)) {
+                    validator.validateNumber(key, value);
+                }
+                if (key === "thumbnails") {
+                    validator.validateArray(key, value);
+                }
+            }
 
             const products = await this.getProducts();
             const product = await this.getProductById(id)
 
             const i = products.findIndex(p => p.id === Number(id));
-            const productExist = { ...products[i], ...updatedProduct };
+            const productExist = { ...products[i], ...object };
             products[i] = productExist;
             await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
 
