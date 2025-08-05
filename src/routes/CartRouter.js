@@ -4,8 +4,7 @@ const router = Router();
 
 router.post("/", async (req, res, next) => {
   try {
-    console.log(req.body)
-    const cart = await cartManager.createCart(req.body);
+    const cart = await cartManager.createCart();
     res.json(cart);
   } catch (error) {
     next(error);
