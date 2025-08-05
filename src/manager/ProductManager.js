@@ -10,7 +10,6 @@ class ProductManager {
         try {
             if (fs.existsSync(this.path)) {
                 const products = await fs.promises.readFile(this.path, "utf-8");
-                console.log(products)
                 return JSON.parse(products);
             }
         } catch (error) {
