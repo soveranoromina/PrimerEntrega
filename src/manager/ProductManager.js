@@ -32,8 +32,8 @@ class ProductManager {
     addProduct = async (object) => {
         try {
             validator.isEmpty(object)
-            const { title, description, code, price, stock, category, thumbnails } = object;
-            const product_values = { title, description, code, price, stock, category, thumbnails };
+            const { title, description, code, price, status, stock, category, thumbnails } = object;
+            const product_values = { title, description, code, price, status, stock, category, thumbnails };
             validator.validateMissingFields(product_values)
 
             for (const [key, value] of Object.entries(object)) {
@@ -46,6 +46,9 @@ class ProductManager {
                 if (key === "thumbnails") {
                     validator.validateArray(key, value);
                 }
+                if (key === "status") {
+                    validator.validateBoolean(key, value);
+                }
             }
 
             const products = await this.getProducts();
@@ -57,6 +60,7 @@ class ProductManager {
                 description,
                 code,
                 price,
+                status,
                 stock,
                 category,
                 thumbnails
@@ -66,7 +70,8 @@ class ProductManager {
 
             await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2))
             return {
-                message: `El producto de ID ${product.id} ha sido creado con éxito`
+                product,
+                status: "created"
             }
         } catch (error) {
             throw error
@@ -90,6 +95,9 @@ class ProductManager {
                 if (key === "thumbnails") {
                     validator.validateArray(key, value);
                 }
+                if (key === "status") {
+                    validator.validateBoolean(key, value);
+                }
             }
 
             const products = await this.getProducts();
@@ -100,7 +108,10 @@ class ProductManager {
             products[i] = productExist;
             await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
 
-            return productExist;
+            return {
+                productExist,
+                status: "updated"
+            }
 
         } catch (error) {
             throw error;
@@ -114,8 +125,9 @@ class ProductManager {
             const newArray = products.filter((u) => u.id !== Number(id));
             await fs.promises.writeFile(this.path, JSON.stringify(newArray));
             return {
-                message: `El producto con ID ${id} ha sido eliminado`
-            }
+                id: id,
+                status: "deleted"
+        }
         } catch (error) {
             throw error;
         }

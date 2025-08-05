@@ -27,6 +27,12 @@ class Validator {
         }
     }
 
+    validateBoolean(key, value) {
+        if (typeof value !== "boolean") {
+            throw new Error(`El campo '${key}' debe ser un boleano`);
+        }
+    }
+
     validateArray(key, value) {
         if (!Array.isArray(value) || value.length === 0) {
             throw new Error(`El campo '${key}' debe ser de tipo Array`);
