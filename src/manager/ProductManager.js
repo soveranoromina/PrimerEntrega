@@ -31,6 +31,7 @@ class ProductManager {
 
     addProduct = async (obj) => {
         try {
+             if (!obj) throw new Error("Debes enviar por lo menos un valor")
             const { title, description, code, price, stock, category, thumbnails } = obj;
             const product_values = { title, description, code, price, stock, category, thumbnails };
 
@@ -51,7 +52,7 @@ class ProductManager {
                 price,
                 stock,
                 category,
-                thumbnails: []
+                thumbnails
             }
 
             products.push(product)
