@@ -23,7 +23,6 @@ router.post("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
     try {
         const { id } = req.params;
-        console.log(id);
         const product = await productManager.getProductById(id);
         res.json(product);
     } catch (error) {
