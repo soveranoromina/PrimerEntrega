@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "npm i express",
     "start": "node --watch ./src/server.js"
   },
   "keywords": [],
