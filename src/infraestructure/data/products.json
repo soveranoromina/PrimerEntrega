@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "title": "Huevos",
+    "description": "Maple de huevos",
+    "code": "A1",
+    "price": 290,
+    "status": true,
+    "stock": 6,
+    "category": "Alimentos",
+    "thumbnails": [
+      {
+        "image": "huevos.png"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Pan de molde",
+    "description": "Pan blanco",
+    "code": "B1",
+    "price": 180,
+    "status": true,
+    "stock": 10,
+    "category": "Alimentos",
+    "thumbnails": [
+      {
+        "image": "pan.png"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Leche",
+    "description": "Leche entera",
+    "code": "C1",
+    "price": 64,
+    "status": true,
+    "stock": 20,
+    "category": "Bebidas",
+    "thumbnails": [
+      {
+        "image": "leche.png"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "1",
+    "description": "Perfumol",
+    "code": "E1",
+    "price": 80,
+    "status": true,
+    "stock": 13,
+    "category": "Higiene",
+    "thumbnails": [
+      {
+        "image": "perfumol.png"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "1",
+    "description": "Perfumol",
+    "code": "E1",
+    "price": 80,
+    "status": true,
+    "stock": 13,
+    "category": "Higiene",
+    "thumbnails": [
+      {
+        "image": "perfumol.png"
+      }
+    ]
+  }
+]
