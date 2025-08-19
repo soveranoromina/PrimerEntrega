@@ -1,59 +1,49 @@
 import { validator } from "../domain/shared/Validator.js"
-import { fileM } from "../infraestructure/repositories/FilesManipulator.js"
-import { ProductFactory } from "../domain/factories/ProductFactory.js"
+import { workWithfile } from "../infraestructure/repositories/WorkWithFiles.js"
+import { Factory } from "../domain/factories/Factory.js"
 
 class ProductManager {
     constructor(path) {
-        this.path = path;
+        this.path = path
     }
 
     getProducts = async () => {
-        try {
-            const products = await fileM.readFile(this.path)
-
+            const products = await workWithfile.readFile(this.path)
             if (products.length === 0) throw new Error("No existen productos")
-
             return products
-
-        } catch (error) {
-
-        }
     }
 
     getProductById = async (id) => {
         try {
-            const products = await this.getProducts();
-            const product = products.find((p) => p.id === Number(id));
+            const products = await this.getProducts()
+            const product = products.find((p) => p.id === Number(id))
 
-            if (!product) throw new Error("Producto no encontrado");
+            if (!product) throw new Error("Producto no encontrado")
 
-            return product;
+            return product
 
         } catch (error) {
-            throw error;
+            throw error
         }
     }
 
     addProduct = async (object) => {
         try {
-            validator.isEmpty(object);
-
-            const products = await this.getProducts();
-            const id = validator.generateId(products);
-
-            const productValidate = ProductFactory.create(id, object);
-            const newProduct = { ...productValidate };
+            validator.isEmpty(object)
+            const products = await this.getProducts()
+            const id = validator.generateId(products)
+            const productValidate = Factory.create("product", id, object, "add")
+            const newProduct = { ...productValidate }
             products.push(newProduct)
-
-            await fileM.writeFile(this.path, JSON.stringify(products, null, 2));
+            await workWithfile.writeFile(this.path, JSON.stringify(products, null, 2))
 
             return {
                 product: newProduct,
-                status: "created"
-            };
+                status: "new"
+            }
 
         } catch (error) {
-            throw error;
+            throw error
         }
     }
 
@@ -62,53 +52,41 @@ class ProductManager {
         try {
 
             validator.isEmpty(object)
-            if ('id' in object) throw new Error("No se puede modificar el campo 'id'");
+            if ('id' in object) throw new Error("No se puede modificar el campo 'id'")
 
-            for (const [key, value] of Object.entries(object)) {
-                if (["title", "description", "code", "category"].includes(key)) {
-                    validator.validateString(key, value);
-                }
-                if (["price", "stock"].includes(key)) {
-                    validator.validateNumber(key, value);
-                }
-                if (key === "thumbnails") {
-                    validator.validateArray(key, value);
-                }
-                if (key === "status") {
-                    validator.validateBoolean(key, value);
-                }
-            }
+            const products = await this.getProducts()
+            await this.getProductById(id)
 
-            const products = await this.getProducts();
-            const product = await this.getProductById(id)
+            const i = products.findIndex(p => p.id === Number(id))
+            const product = { ...products[i], ...object }
 
-            const i = products.findIndex(p => p.id === Number(id));
-            const productExist = { ...products[i], ...object };
-            products[i] = productExist;
-            await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
+            Factory.create("product", id, product, "update")
+            products[i] = product
+            
+            await workWithfile.writeFile(this.path, JSON.stringify(products, null, 2))
 
             return {
-                productExist,
+                product,
                 status: "updated"
             }
 
         } catch (error) {
-            throw error;
+            throw error
         }
     }
 
     deleteProduct = async (id) => {
         try {
-            const products = await this.getProducts();
-            const product = await this.getProductById(id);
-            const newArray = products.filter((u) => u.id !== Number(id));
-            await fs.promises.writeFile(this.path, JSON.stringify(newArray));
+            const products = await this.getProducts()
+            await this.getProductById(id)
+            const newArray = products.filter((u) => u.id !== Number(id))
+            await workWithfile.writeFile(this.path, JSON.stringify(newArray))
             return {
                 id: id,
                 status: "deleted"
             }
         } catch (error) {
-            throw error;
+            throw error
         }
     }
 
