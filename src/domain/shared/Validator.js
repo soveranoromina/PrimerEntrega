@@ -30,25 +30,41 @@ class Validator {
             if (!value) throw new Error(`Falta el campo ${key}`)
         }
     }
-
+/**
+ * Valida si el tipo de dato es string.
+ *
+ * @param {JSON<Object>} fields - JSON recibido.
+ */
     validateString(key, value) {
         if (typeof value !== "string" || value.trim() === "") {
             throw new Error(`El campo '${key}' debe ser un string no vacío`);
         }
     }
-
+/**
+ * Valida si el tipo de dato es number.
+ *
+ * @param {JSON<Object>} fields - JSON recibido.
+ */
     validateNumber(key, value) {
         if (typeof value !== "number") {
             throw new Error(`El campo '${key}' debe ser un number`);
         }
     }
-
+/**
+ * Valida si el tipo de dato es boolean.
+ *
+ * @param {JSON<Object>} fields - JSON recibido.
+ */
     validateBoolean(key, value) {
         if (typeof value !== "boolean") {
             throw new Error(`El campo '${key}' debe ser un boleano`);
         }
     }
-
+/**
+ * Valida si el tipo de dato es array.
+ *
+ * @param {JSON<Object>} fields - JSON recibido.
+ */
     validateArray(key, value) {
         if (!Array.isArray(value) || value.length === 0) {
             throw new Error(`El campo '${key}' debe ser de tipo Array`);
