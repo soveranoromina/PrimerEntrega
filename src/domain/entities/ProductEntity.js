@@ -1,7 +1,7 @@
 import { validator } from "../shared/Validator.js";
 
 export class ProductEntity {
-    constructor(id, {title, description, code, price, status, stock, category, thumbnails }) {
+    constructor(id, {title, description, code, price, status, stock, category, thumbnails }, method) {
 
         const fields = { title, description, code, price, status, stock, category, thumbnails }
 
@@ -15,7 +15,7 @@ export class ProductEntity {
         this.category = category;
         this.thumbnails = thumbnails;
 
-        validator.validateMissingFields(fields);
+        if (method === "add") validator.validateMissingFields(fields);
         this.validateDataTypes(fields)
         this.validateCategory(category);
         this.validatePrice(price)
